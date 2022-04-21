@@ -56,7 +56,7 @@ final class SearchView_ViewModel: ObservableObject {
     @Published var responsedLocations = [Location]()
     @Published var scrollTarget: Int?
     @Published var hideDropDown = true
-    @Published var option = SearchOptions(sliderVal: SliderValue(min_Value: 10, max_Value: 700))
+    @Published var option = SearchOptions(sliderVal: SliderValue(min_Value: 10, max_Value: 50))
     
     var imgIsLoading = false
     var api : APICall? = nil
@@ -153,7 +153,7 @@ final class SearchView_ViewModel: ObservableObject {
                     if let data = try? Data(contentsOf: imageURL) {
                         if let image = UIImage(data: data) {
                             DispatchQueue.main.async {
-                                self!.cacheImage(image: image, zpid: location.zpid)
+                                self?.cacheImage(image: image, zpid: location.zpid)
                                 // This code is for refreshing the view as it is not automatically refreshing once it is downloaded.
                                 if(i == 1){
                                     self!.textInput = ""
@@ -220,8 +220,8 @@ final class SearchView_ViewModel: ObservableObject {
         searchTapped()
     }
     
-    func matchesInput(currCity : City) -> Bool {
-        if(indexOfMatchedStr(currCity: currCity) != 0){
+    func matchesInput(cityName : String, input: String) -> Bool {
+        if(indexOfMatchedStr(cityName: cityName, input: input) != 0){
             return true
         }
         return false
@@ -229,7 +229,7 @@ final class SearchView_ViewModel: ObservableObject {
     
     func hasMatchingCity() -> Bool{
         for city in greaterVanCities {
-            if(matchesInput(currCity: city)){
+            if(matchesInput(cityName: city.name, input: textInput)){
                 selectedCity = city
                 return true
             }
@@ -239,25 +239,25 @@ final class SearchView_ViewModel: ObservableObject {
     }
     
     // returns the index of matching string
-    func indexOfMatchedStr(currCity: City) -> Int {
-        if(currCity.name.count < textInput.count || textInput.count == 0){
+    func indexOfMatchedStr(cityName: String, input : String) -> Int {
+        if(cityName.count < input.count || input.count == 0){
             return 0
         }
-        let aryStr = Array(currCity.name)
-        for (i,char) in textInput.enumerated() {
+        let aryStr = Array(cityName)
+        for (i,char) in input.enumerated() {
             if(aryStr[i] != char){
                 return i
             }
         }
         
-        return textInput.count
+        return input.count
     }
     
     func dividedStr(currCity: City) -> [String] {
         
         var ary = ["", ""]
         let name = currCity.name
-        let i = indexOfMatchedStr(currCity: currCity)
+        let i = indexOfMatchedStr(cityName: currCity.name, input: textInput)
         
         let start = name.index(name.startIndex, offsetBy: i)
         

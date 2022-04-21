@@ -41,7 +41,7 @@ struct SearchView : View {
                             
                             ScrollView{
                                 ForEach(viewModel.greaterVanCities, id: \.self){ city in
-                                    if(viewModel.matchesInput(currCity: city)){
+                                    if(viewModel.matchesInput(cityName: city.name, input: viewModel.textInput)){
                                         HStack(alignment: .center, spacing: 0){
                                             let cityNames = viewModel.dividedStr(currCity: city)
                                             
@@ -237,8 +237,8 @@ struct SearchView : View {
             .navigationBarHidden(true)
             .onAppear(){
                 // Setting the slider max value to fit the frame
-                viewModel.option.sliderVal.max_Value = geo.size.width - 50
-                viewModel.option.sliderVal.max_SliderValue = geo.size.width - 50
+                viewModel.option.sliderVal.max_Value = geo.size.width - 120
+                viewModel.option.sliderVal.max_SliderValue = geo.size.width - 120
                 print(viewModel.option.sliderVal.max_Value)
             }
             
